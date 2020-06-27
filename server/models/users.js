@@ -3,7 +3,30 @@ var userSchema=new mongoose.Schema({
    "userId":String,
    "userName":String,
    "userPwd":String,
-   "orderList":Array,
+   "orderList":[
+     {
+      "orderId":String,
+      "orderTotal":Number,
+      "addressInfo":[{
+          "addressId":String,
+          "userName":String,
+          "streetName":String,
+          "postCode":String,
+          "tel":String,
+          "isDefault":Boolean
+       }],
+      "goodsList":[{
+         "productId":String,
+         "productName":String,
+         "salePrice":Number,
+         "productImage":String,
+         "checked":String,
+         "productNum":Number
+      }],
+      "orderStatus":String,
+      "createDate":Date
+     }
+    ],
    "cartList":[
       {
        "productId":String,
@@ -16,12 +39,12 @@ var userSchema=new mongoose.Schema({
    ],
    "addressList":[
       {
-        addressId:String,
-        userName:String,
-        streetName:String,
-        postCode:String,
-        tel:String,
-        isDefault:Boolean
+        "addressId":String,
+        "userName":String,
+        "streetName":String,
+        "postCode":String,
+        "tel":String,
+        "isDefault":Boolean
       }
    ]
 });

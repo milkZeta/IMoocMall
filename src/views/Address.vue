@@ -173,7 +173,8 @@
         init(){
           axios.get('/users/addressList').then((response)=>{
            this.addressList= response.data.result;
-        })
+           this.selectedAddId=this.addressList[0].addressId;
+        })           
         },
         expand(){
           if(this.limit==3){

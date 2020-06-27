@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var user=require('../models/users');
+require('./../util/util');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
@@ -259,5 +260,67 @@ router.post('/delAddress',(req,res,next)=>{
 			 		})
 			 	}
 	 	})
+});
+router.post('/payment',(req,res,next)=>{
+	var userId=req.cookies.userId,
+	    addressId=req.body.addressId,
+	    orderTotal=req.body.orderTotal;
+	user.findOne({userId:userId},(err,doc)=>{
+		if(err){
+		 		res.json({
+		 			status:'1',
+		 			msg:err.message,
+		 			result:''
+		 		})
+	 	}else{
+	 		var address='',goodsList=[];
+	 		doc.addressList.forEach((item)=>{
+	 			if(item.addressId=addressId){
+	 				address=item;
+	 			}
+	 		}),
+	 		doc.cartList.filter((item)=>{
+	 			if(item.checked=='1'){
+	 				goodsList.push(item);
+	 			}
+	 		})
+	 		var platForm='622';
+	 		var r1=Math.floor(Math.random()*10),
+	 		    r2=Math.floor(Math.random()*10);
+ 		    var sysDate=new Date().Format('yyyyMMddhhmmss'),
+ 		        createDate=new Date().Format('yyyy-MM-dd hh:mm:ss');
+ 		    var orderId=platForm+r1+sysDate+r2;
+
+	 		var order={
+	 			orderId:orderId,
+	 			orderTotal:orderTotal,
+	 			addressInfo:address,
+	 			goodsList:goodsList,
+	 			orderStatus:'1',
+	 			createDate:createDate
+	 		}
+	 		doc.orderList.push(order);
+	 		doc.save((err1,doc1)=>{
+	 			if(err1){
+		 			res.json({
+			 			status:'1',
+			 			msg:err1.message,
+			 			result:goodsList
+			 		})
+	 			}
+	 			else{
+	 				res.json({
+			 			status:'0',
+			 			msg:'',
+			 			result:{
+                           orderId:order.orderId,
+                           ordderTotal:order.orderTotal
+			 			 }
+			 		})
+	 			}
+	 		})
+	 		
+	 	}
+	})
 })
 module.exports = router;
